@@ -15,6 +15,7 @@ for (let i = 0; i < recordCount; i++) {
 
 const assets = []; 
 for (let i = 0; i < recordCount; i++) { 
+  /** @type {import('../../src/models/Assets/AssetItem').AssetItemAttributes} */
   const asset = {
     assetId: faker.datatype.uuid(),
     assetTag: faker.datatype.string(5),

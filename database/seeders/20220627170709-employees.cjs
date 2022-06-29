@@ -10,6 +10,7 @@ for (let i = 0; i < recordCount; i++) {
 
 const employees = []; 
 for (let i = 0; i < recordCount; i++) { 
+  /** @type {import('../../src/models/Employee/Employee').EmployeeAttributes} */
   const employee = {
     'id': employeeIds[i],
     'givenName': faker.name.firstName(),
