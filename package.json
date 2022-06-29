@@ -2,7 +2,7 @@
 	"name": "global-service-delivery",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "svelte-kit dev",
+		"dev": "NODE_OPTIONS=--inspect svelte-kit dev",
 		"build": "svelte-kit build",
 		"package": "svelte-kit package",
 		"preview": "svelte-kit preview",
@@ -11,16 +11,21 @@
 		"check": "svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check --plugin-search-dir=. . && eslint .",
-		"format": "prettier --write --plugin-search-dir=. ."
+		"format": "prettier --write --plugin-search-dir=. .",
+		"migrate:up": "sequelize-cli db:migrate",
+		"migrate:down": "sequelize-cli db:migrate:undo"
 	},
 	"devDependencies": {
-		"@playwright/test": "^1.22.2",
+		"@faker-js/faker": "^7.3.0",
+		"@playwright/test": "^1.23.0",
 		"@sveltejs/adapter-auto": "next",
-		"@sveltejs/kit": "next",
+		"@sveltejs/kit": "1.0.0-next.355",
 		"@types/cookie": "^0.5.1",
 		"@types/jsonwebtoken": "^8.5.8",
-		"@typescript-eslint/eslint-plugin": "^5.27.0",
-		"@typescript-eslint/parser": "^5.27.0",
+		"@types/luxon": "^2.3.2",
+		"@types/uuid": "^8.3.4",
+		"@typescript-eslint/eslint-plugin": "^5.30.0",
+		"@typescript-eslint/parser": "^5.30.0",
 		"autoprefixer": "^10.4.7",
 		"eslint": "^8.16.0",
 		"eslint-config-prettier": "^8.3.0",
@@ -28,6 +33,7 @@
 		"postcss": "^8.4.14",
 		"prettier": "^2.6.2",
 		"prettier-plugin-svelte": "^2.7.0",
+		"sequelize-cli": "^6.4.1",
 		"svelte": "^3.46.0",
 		"svelte-check": "^2.7.1",
 		"svelte-preprocess": "^4.10.7",
@@ -43,8 +49,10 @@
 		"dotenv": "^16.0.1",
 		"flag-icons": "^6.6.2",
 		"jsonwebtoken": "^8.5.1",
+		"luxon": "^2.4.0",
 		"sequelize": "^6.21.1",
 		"sqlite3": "^5.0.8",
-		"svelte-multiselect": "^5.0.1"
+		"svelte-multiselect": "^5.0.2",
+		"uuid": "^8.3.2"
 	}
 }
