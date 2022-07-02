@@ -2,6 +2,7 @@ import 'dotenv/config';
 import type { Handle, GetSession } from '@sveltejs/kit';
 import * as cookie from 'cookie';
 import jwt, { type JwtPayload } from 'jsonwebtoken';
+import type { EmployeeAttributes } from '$models/Employee/Employee';
 
 const jwtSigningOptions: jwt.SignOptions = {
 	algorithm: 'HS256',
@@ -21,19 +22,27 @@ export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.jwt = cookies['jwt'] ?? null;
 	try {
 		event.locals.jwtPayload = jwt.verify(event.locals.jwt, process.env.JWT_SECRET, jwtDecodeOptions);
+		// TODO! : Fix this hack to replenish the JWT and/or implement a new process
+		event.locals.employee = event.locals.jwtPayload.employee;
+		event.locals.user_id = event.locals.jwtPayload.user_id;
 	} catch (err) {
 		event.locals.jwtPayload = null;
 	}
 
 	const response = await resolve(event);
-
 	let newJwt = '';
 	if (cookies['jwt'] === undefined || event.locals.jwtPayload === null) {
 		// No JWT cookie was preset (or was invalid), initialize an empty one
-		newJwt = jwt.sign({ iss: 'global-service-delivery' }, process.env.JWT_SECRET, { ...jwtSigningOptions, expiresIn: '2h', });
+		newJwt = jwt.sign({
+			iss: 'global-service-delivery',
+			user_id: null,
+			employee: null,
+		}, process.env.JWT_SECRET, { ...jwtSigningOptions, expiresIn: '2h', });
 	} else {
 		// JWT cookie was preset, update it
 		if (typeof event.locals.jwtPayload !== 'string') {
+			event.locals.jwtPayload.user_id = event.locals.user_id;
+			event.locals.jwtPayload.employee = event.locals.employee;
 			const dateNow = new Date();
 			if (event.locals.jwtPayload.exp !== undefined) {
 				const timeExp = Math.floor(dateNow.getTime() / 1000) + (2 * 60 * 60);
@@ -62,7 +71,8 @@ export const getSession: GetSession = (event) => {
 	const jwtPayloadData = event.locals.jwtPayload as JwtPayload ?? {};
 	const session: App.Session = {
 		user_id: jwtPayloadData.user_id ?? null,
-		jwtExp: jwtPayloadData.exp ?? null
+		jwtExp: jwtPayloadData.exp ?? null,
+		employee: jwtPayloadData.employee ?? null,
 	};
 	return session;
 };

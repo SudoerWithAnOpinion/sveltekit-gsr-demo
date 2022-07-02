@@ -13,6 +13,7 @@ export const get: RequestHandler = async (event) => {
             include: ['AssignedToEmployee']
         }),
     ]).then(results => {
+        if (results[0] === null) return { asset: null, assignments: null, assignments_AssignedToEmployee: null };
         const [l_asset, l_assignments] = results;
         const assignments_AssignedToEmployee = l_assignments.map(l_assignment => {
             if (l_assignment.AssignedToEmployee) {
@@ -27,8 +28,9 @@ export const get: RequestHandler = async (event) => {
             assignments_AssignedToEmployee
         };
     });
+    Date.prototype.toJSON = function () { return this.toISOString(); }
     return {
-        statusCode: 200,
+        statusCode: (result.asset === null) ? 404 : 200,
         body: result
     }
 }

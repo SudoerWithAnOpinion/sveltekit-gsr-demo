@@ -9,6 +9,7 @@ export const get: RequestHandler = async (event) => {
         //     serialNumber: event.params.filter_assetType,
         // }
     });
+    Date.prototype.toJSON = function () { return this.toISOString(); }
     return {
         body: {
             assets: assetList

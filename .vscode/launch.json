@@ -2,13 +2,21 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Attach",
-            "port": 9229,
-            "request": "attach",
-            "skipFiles": [
-                "<node_internals>/**"
+            "name": "Dev Server",
+            "request": "launch",
+            "runtimeArgs": [
+                "run",
+                "dev",
+                "--host"
             ],
-            "type": "node"
+            "runtimeExecutable": "pnpm",
+            "skipFiles": [
+                "<node_internals>/**",
+                "**/$KNOWN_TOOLS$/**",
+                "${workspaceRoot}/node_modules/**",
+            ],
+            "type": "node",
+            "console": "integratedTerminal",
         },
         {
             "type": "chrome",
@@ -17,6 +25,5 @@
             "url": "http://localhost:3000",
             "webRoot": "${workspaceFolder}"
         },
-        
     ]
 }

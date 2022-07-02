@@ -4,8 +4,11 @@ import { Sequelize } from 'sequelize';
 import * as dbConfigFile from '../../sequelize.config.json';
 
 import Employee, * as EmployeeModel from './Employee/Employee';
+import UserPass, * as UserPassModel from './Authentication/UserPass';
 import AssetItem, * as AssetItemModel from './Assets/AssetItem';
 import AssetAssignment, * as AssetAssignmentModel from './Assets/AssetAssignment';
+import Shipment, * as ShipmentModel from './Assets/Shipping/Shipment';
+import ShipmentContents, * as ShipmentContentsModel from './Assets/Shipping/ShipmentContents';
 
 let dbConfig: Options;
 if (process.env.NODE_ENV === 'production' && process.env.SEQUELIZE_PROD_CONFIG === undefined) {
@@ -33,8 +36,12 @@ const sequelize = new Sequelize({
 // Setup Models
 const Models = [
     EmployeeModel,
+    UserPassModel,
+
     AssetItemModel,
-    AssetAssignmentModel
+    AssetAssignmentModel,
+    ShipmentModel,
+    ShipmentContentsModel,
 ];
 
 Models.forEach((model) => model.init(sequelize));
@@ -45,6 +52,9 @@ export {
     sequelize,
     sequelize as Sequelize,
     Employee,
+    UserPass,
     AssetItem,
-    AssetAssignment
+    AssetAssignment,
+    Shipment,
+    ShipmentContents,
 };

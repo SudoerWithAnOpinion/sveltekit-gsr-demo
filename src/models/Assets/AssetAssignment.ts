@@ -16,35 +16,11 @@ import {
     Sequelize,
 } from 'sequelize';
 
+import type { AssetCondition } from './_enums';
+
 import AssetItem from '$models/Assets/AssetItem';
 import Employee from '$models/Employee/Employee';
 
-export enum AssetType {
-    DESKTOP_COMPUTER = 'DESKTOP_COMPUTER',
-    LAPTOP_COMPUTER = 'LAPTOP_COMPUTER',
-    MONITOR = 'MONITOR',
-    KEYBOARD = 'KEYBOARD',
-    MOUSE = 'MOUSE',
-    HEADPHONES = 'HEADPHONES',
-    HEADPHONE_ADAPTER = 'HEADPHONE_ADAPTER',
-    MICROPHONE = 'MICROPHONE',
-    SPEAKERS = 'SPEAKERS',
-    DISPLAY_ADAPTER = 'DISPLAY_ADAPTER',
-    MOUSE_PAD = 'MOUSE_PAD',
-    PRINTER = 'PRINTER',
-    NETWORK_ADAPTER = 'NETWORK_ADAPTER',
-    USB_HUB = 'USB_HUB',
-    MASS_STORAGE_DEVICE = 'MASS_STORAGE_DEVICE',
-    OTHER = 'OTHER',
-}
-
-export enum AssetCondition {
-    NEW = 'NEW',
-    USED_LIKE_NEW = 'USED_LIKE_NEW',
-    USED_COSMETIC_DAMAGE = 'USED_COSMETIC_DAMAGE',
-    USED_WORN = 'USED_WORN',
-    NON_FUNCTIONAL = 'NON_FUNCTIONAL',
-}
 
 export default class AssetAssignment extends Model<
     InferAttributes<AssetAssignment>,

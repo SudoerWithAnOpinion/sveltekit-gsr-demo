@@ -16,31 +16,14 @@ import {
     Sequelize,
 } from 'sequelize';
 
+import type { AssetType } from './_enums';
+
 import AssetAssignment from '$models/Assets/AssetAssignment';
 // import AssetRepair from './AssetRepair';
 import Employee from '../Employee/Employee';
 // import AssetShipment from './Shipping/AssetShipment';
 // import ShippingContents from './Shipping/ShippingContents';
 
-export enum AssetType {
-    DESKTOP_COMPUTER = 'DESKTOP_COMPUTER',
-    LAPTOP_COMPUTER = 'LAPTOP_COMPUTER',
-    MONITOR = 'MONITOR',
-    KEYBOARD = 'KEYBOARD',
-    MOUSE = 'MOUSE',
-    HEADPHONES = 'HEADPHONES',
-    HEADPHONE_ADAPTER = 'HEADPHONE_ADAPTER',
-    MICROPHONE = 'MICROPHONE',
-    SPEAKERS = 'SPEAKERS',
-    DISPLAY_ADAPTER = 'DISPLAY_ADAPTER',
-    MOUSE_PAD = 'MOUSE_PAD',
-    PRINTER = 'PRINTER',
-    NETWORK_ADAPTER = 'NETWORK_ADAPTER',
-    USB_HUB = 'USB_HUB',
-    MASS_STORAGE_DEVICE = 'MASS_STORAGE_DEVICE',
-    LICENSE = 'LICENSE',
-    OTHER = 'OTHER',
-}
 
 export default class AssetItem extends Model<
     InferAttributes<AssetItem>,
@@ -86,9 +69,9 @@ export default class AssetItem extends Model<
     }
 }
 export type AssetItemAttributes = Attributes<AssetItem> & {
-    enteredByEmployee: Employee;
-    retiredByEmployee: Employee;
-    Assignments: AssetAssignment[];
+    enteredByEmployee: Attributes<Employee>;
+    retiredByEmployee: Attributes<Employee>;
+    Assignments: Attributes<AssetAssignment>[];
 };
 
 export function init(sequelize: Sequelize) {

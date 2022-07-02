@@ -7,7 +7,7 @@ const employeeIds = [];
 for (let i = 0; i < recordCount; i++) {
   employeeIds.push(faker.datatype.uuid());
 }
-faker.seed(recordCount + 1)
+faker.seed(recordCount + 1);
 const assetIds = [];
 for (let i = 0; i < recordCount; i++) {
   assetIds.push(faker.datatype.uuid());
@@ -17,7 +17,7 @@ const assets = [];
 for (let i = 0; i < recordCount; i++) { 
   /** @type {import('../../src/models/Assets/AssetItem').AssetItemAttributes} */
   const asset = {
-    assetId: faker.datatype.uuid(),
+    assetId: assetIds[i],
     assetTag: faker.datatype.string(5),
     assetType: faker.helpers.arrayElement(['LAPTOP_COMPUTER', 'DESKTOP_COMPUTER']),
     manufacturer: faker.company.companyName(),

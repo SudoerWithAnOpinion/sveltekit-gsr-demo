@@ -2,12 +2,29 @@
 	export const prerender = false;
 </script>
 <script lang="ts">
+  type AssetType = Omit<AssetItemAttributes, 'acquisitionDate'|'retirementDate'|'createdAt'|'updatedAt'> & {
+    acquisitionDate: Date | string, 
+    retirementDate: Date | string, 
+    createdAt: Date | string, 
+    updatedAt: Date | string
+  };
+  function isoDateString(inputDate: Date | string){
+    if (typeof inputDate === 'string') {
+      return inputDate;
+    }else{
+      return inputDate.toISOString();
+    }
+  }
+  function ymdDate(inputDate: Date | string){
+    return DateTime.fromISO(isoDateString(inputDate)).toFormat('yyyy-MM-dd');
+  }
+
   import AssetConditionIcon from '$components/Asset/AssetConditionIcon.svelte';
   import AssetTypeIcon from '$components/Asset/AssetTypeIcon.svelte';
   import type {AssetItemAttributes} from '$models/Assets/AssetItem';
   import type {AssetAssignmentAttributes} from '$models/Assets/AssetAssignment';
   import {DateTime} from 'luxon';
-  export let asset: AssetItemAttributes;
+  export let asset: AssetType
   export let assignments: AssetAssignmentAttributes[];
   export let assignments_AssignedToEmployee: string[]|null[];
   $: asset;
@@ -30,22 +47,22 @@
             <tbody>
               <tr>
                 <td><i class="fa-duotone fa-fw fa-circle-info"></i></td>
-                <td>Type: </td>
+                <td class="text-atento-secondary-grey-4">Type: </td>
                 <td>{asset.assetType}</td>
               </tr>
               <tr>
                 <td><i class="fa-duotone fa-fw fa-industry"></i></td>
-                <td>Manufacturer: </td>
+                <td class="text-atento-secondary-grey-4">Manufacturer: </td>
                 <td>{asset.manufacturer}<br></td>
               </tr>
               <tr>
                 <td><i class="fa-duotone fa-fw fa-memo-circle-info"></i></td>
-                <td>Model Number: </td>
+                <td class="text-atento-secondary-grey-4">Model Number: </td>
                 <td>{asset.modelNumber}</td>
               </tr>
               <tr>
                 <td><i class="fa-duotone fa-fw fa-qrcode"></i></td>
-                <td>Serial Number: </td>
+                <td class="text-atento-secondary-grey-4">Serial Number: </td>
                 <td>{asset.serialNumber}</td>
               </tr>
             </tbody>
@@ -57,26 +74,27 @@
             <tbody>
               <tr>
                 <td><i class="fa-duotone fa-box-check"></i></td>
-                <td>Acquisition Date</td>
-                <td>{DateTime.fromISO(asset.acquisitionDate.toISOString()).toFormat('yyyy-MM-dd')}</td>
+                <td class="text-atento-secondary-grey-4">Acquisition Date</td>
+                <td>{ymdDate(asset.acquisitionDate)}</td>
+                <!-- <td>{asset.acquisitionDate}</td> -->
               </tr>
               <tr>
                 <td colspan="3" class="font-bold">Audit Data</td>
               </tr>
               <tr>
-                <td><i class="fa-solid fa-right-to-bracket mr-1"></i></td>
-                <td>Entered On</td>
-                <td>{DateTime.fromISO(asset.createdAt.toISOString()).toFormat('yyyy-MM-dd')} (by {asset.enteredByEmployee.fullName})</td>
+                <td><i class="fa-duotone fa-right-to-bracket mr-1"></i></td>
+                <td  class="text-atento-secondary-grey-4">Entered On</td>
+                <td>{ymdDate(asset.createdAt)} (by {asset.enteredByEmployee.givenName} {asset.enteredByEmployee.familyName})</td>
               </tr>
               {#if asset.retirementDate !== null}
                 <tr>
-                  <td><i class="fa-solid fa-right-from-bracket mr-1"></i>Retirement</td>
-                  <td>{DateTime.fromISO(asset.retirementDate.toISOString()).toISODate()} (by asset.retiredByEmployee.fullName)</td>
+                  <td><i class="fa-duotone fa-right-from-bracket mr-1"></i>Retirement</td>
+                  <td>{ymdDate(asset.retirementDate)} (by asset.retiredByEmployee.fullName)</td>
                 </tr>
               {:else}
                 <tr>
-                  <td><i class="fa-solid fa-right-from-bracket mr-1"></i></td>
-                  <td>Retirement On</td>
+                  <td><i class="fa-duotone fa-right-from-bracket mr-1"></i></td>
+                  <td  class="text-atento-secondary-grey-4">Retirement On</td>
                   <td><span class="tag bg-green-500">In Service</span></td>
                 </tr>
               {/if}
@@ -104,12 +122,12 @@
                   <td>{assignment.assignmentId.substring(24)}</td>
                   <td>{assignments_AssignedToEmployee[i]}</td>
                   <td>
-                    {DateTime.fromISO(assignment.assignedOn.toISOString()).toFormat('yyyy-MM-dd')}
+                    {ymdDate(assignment.assignedOn)}
                     / <AssetConditionIcon condition={assignment.assignedCondition} /> {assignment.assignedCondition}
                   </td>
                   <td>
                     {#if assignment.returnedOn}
-                      {DateTime.fromISO(assignment.returnedOn.toISOString()).toFormat('yyyy-MM-dd')}
+                      {ymdDate(assignment.returnedOn)}
                       / <AssetConditionIcon condition={assignment.returnCondition} /> {assignment.returnCondition} 
                     {:else}
                       <span class="text-gray-500">Not Returned</span>

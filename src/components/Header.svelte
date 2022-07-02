@@ -1,74 +1,54 @@
 <script lang="ts"> // Component Instance
-	import { page } from '$app/stores';
+	import { page, session } from '$app/stores';
 	import logo from '$lib/img/Atento_Logo_RGB_White.png'
-	export let user_id:string;
+	$: userFullName = $session.employee?.givenName + ' ' + $session.employee?.familyName;
+	$: $session.user_id;
 </script>
 <header>
-	<nav class="font-[Omnes]">
-		<ul>
-			<li class="brand">
+	<nav class="font-[Omnes] bg-atento-primary-blue border-gray-200 px-2 sm:px-4 py-2.5 rounded-b">
+		<div class="container flex flex-wrap justify-between items-center">
+			<a href="/" class="flex items-center">
 				<img src={logo} alt="Atento" />	
-				Global Service Delivery
-			</li>
-			<li class:active={$page.url.pathname === '/'}>
-				<a sveltekit:prefetch href="/">
-					<i class="fa fa-solid fa-house mr-1"></i>
-					Home
-				</a>
-			</li>
-			{#if user_id ?? null !== null }
-				<li class:active={$page.url.pathname === '/employees'}>
-					<a sveltekit:prefetch href="/employees">
-						<i class="fa fa-solid fa-users mr-1"></i>
-						Employees
-					</a>
-				</li>
-				<li class:active={$page.url.pathname === '/assets'}>
-					<a sveltekit:prefetch href="/assets">
-						<i class="fa fa-solid fa-warehouse-full mr-1"></i>
-						Assets
-					</a>
-				</li>
-				<li class:active={$page.url.pathname === '/tickets'}>
-					<a sveltekit:prefetch href="/tickets">
-						<i class="fa fa-solid fa-ticket mr-1"></i> 
-						Help & Request Tickets
-					</a>
-				</li>
-			{:else}
-				<li class:active={$page.url.pathname === '/login'}>
-					<a sveltekit:prefetch href="/login">
-						<i class="fa fa-solid fa-sign-in-alt ml-auto"></i>
-						Login
-					</a>
-				</li>
-			{/if}
-		</ul>
+				<span class="self-center text-lg font-semibold whitespace-nowrap">Global Service Delivery</span>
+			</a>
+			<div class="flex items-center md:order-2 text-white">
+				{#if $session.user_id ?? null !== null }
+					<i class="fa-duotone fa-fw fa-user-circle text-white"></i> {userFullName}
+				{:else}
+					<span class:active={$page.url.pathname === '/auth/login'}>
+						<a sveltekit:prefetch href="/auth/login" class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:p-0">
+							<i class="fa-fw fa-solid fa-sign-in-alt mx-1"></i>
+							Login
+						</a>
+					</span>
+				{/if}
+			</div>
+			<div class="hidden justify-between items-center w-full md:flex md:w-auto md:order-1" id="mobile-menu">
+				<ul class="flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium">
+					{#if $session.user_id ?? null !== null }
+						<li class:active={$page.url.pathname === '/'}>
+							<a sveltekit:prefetch href="/" class="block py-2 pr-4 pl-3 rounded bg-transparent md:p-0">
+								<i class="fa fa-solid fa-house mx-1"></i> Home
+							</a>
+						</li>
+						<li class:active={$page.url.pathname.startsWith('/assets')}>
+							<a sveltekit:prefetch href="/assets" class="block py-2 pr-4 pl-3 rounded bg-transparent md:p-0">
+								<i class="fa fa-solid fa-warehouse-full mr-1"></i> Assets
+							</a>
+						</li>
+						<li class:active={$page.url.pathname.startsWith('/employees')}>
+							<a sveltekit:prefetch href="/employees" class="block py-2 pr-4 pl-3 rounded bg-transparent md:p-0">
+								<i class="fa fa-solid fa-users mr-1"></i> Employees
+							</a>
+						</li>
+					{/if}
+				</ul>
+			</div>
+		</div>
 	</nav>
 </header>
 
 <style>
-	header {
-		display: flex-block;
-		justify-content: space-between;
-	}
-
-	nav {
-		display: flex;
-		flex-direction: row;
-		justify-content: flex-start;
-		background: var(--atento-primary-blue);
-		color: var(--atento-primary-white);
-	}
-	nav .brand {
-		display: flex;
-		align-items: center;
-		height: 100%;
-		padding: 0 .5em;
-		font-weight: bold;
-		text-transform: uppercase;
-		color: var(--atento-secondary-blue-2);
-	}
 	nav a {
 		display: flex;
 		align-items: center;
@@ -85,40 +65,16 @@
 	}
 
 	nav img {
-		height: 1.5em;
+		height: 1.2em;
 		margin-right: 1em;
 		object-fit: contain;
 	}
-	
-	ul {
-		position: relative;
-		padding: 0;
-		margin: 0;
-		height: 3em;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		list-style: none;
-		background-size: contain;
-	}
 
-	li {
-		position: relative;
-		height: 100%;
-	}
-
-	li.active::before {
-		--size: 6px;
-		content: '';
-		width: 0;
-		height: 0;
-		position: absolute;
-		top: 0;
-		left: calc(50% - var(--size));
-		border: var(--size) solid transparent;
-		border-top: var(--size) solid var(--atento-secondary-blue-2);
-	}
-	a:hover {
+	li.active a, span.active a {
 		color: var(--atento-secondary-blue-2);
+	}
+
+	a:hover {
+		color: var(--atento-primary-orange);
 	}
 </style>

@@ -15,7 +15,7 @@ const timestamps = {
 
 module.exports = {
   async up (queryInterface, Sequelize) {
-    Promise.all([
+    return Promise.all([
         queryInterface.createTable('employees', {
             id: {
                 allowNull: false,
@@ -103,11 +103,19 @@ module.exports = {
             },
             assetUUID: {
                 allowNull: false,
-                type: Sequelize.UUID
+                type: Sequelize.UUID,
+                references: {
+                    model: 'asset_items',
+                    key: 'assetId'
+                }
             },
             assignedToEmployeeUUID: {
                 allowNull: false,
-                type: Sequelize.UUID
+                type: Sequelize.UUID,
+                references: {
+                    model: 'employees',
+                    key: 'id'
+                }
             },
             assignedOn: {
                 allowNull: false,
@@ -133,13 +141,13 @@ module.exports = {
             allowNull: true,
             type: Sequelize.UUID
             },
-            ...timestamps 
+            ...timestamps,
         }),
     ]);
   },
 
   async down (queryInterface, Sequelize) {
-    Promise.all([
+    return Promise.all([
         queryInterface.dropTable('employees'),
         queryInterface.dropTable('asset_items'),
         queryInterface.dropTable('asset_assignments'),

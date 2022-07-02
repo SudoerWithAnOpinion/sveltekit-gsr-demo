@@ -7,12 +7,13 @@ const employeeIds = [];
 for (let i = 0; i < recordCount; i++) {
   employeeIds.push(faker.datatype.uuid());
 }
-faker.seed(recordCount + 1)
+faker.seed(recordCount + 1);
 const assetIds = [];
 for (let i = 0; i < recordCount; i++) {
   assetIds.push(faker.datatype.uuid());
 }
-faker.seed(recordCount * 2 + 1)
+
+faker.seed((recordCount * 2) + 1)
 const assignmentIds = [];
 for (let i = 0; i < recordCount; i++) {
   assignmentIds.push(faker.datatype.uuid());
@@ -24,14 +25,14 @@ for (let i = 0; i < recordCount; i++) {
   const asset_assignment = {
     assignmentId: assignmentIds[i],
     assetUUID: assetIds[i],
-    assignedToEmployeeUUID: employeeIds[faker.datatype.number({ min: 0, max: recordCount - 1 })],
-    assignedOn: faker.date.past(1),
+    assignedToEmployeeUUID: employeeIds[i],
+    assignedOn: faker.date.past(60),
     assignedCondition: 'NEW',
-    returnedOn: faker.date.recent(40),
+    returnedOn: faker.date.recent(10),
     returnCondition:faker.helpers.arrayElement(['NEW','USED_LIKE_NEW','USED_COSMETIC_DAMAGE','USED_WORN','NON_FUNCTIONAL']),
     assignedEntryBy: employeeIds[faker.datatype.number({ min: 0, max: recordCount - 1 })],
     returnEntryBy: employeeIds[faker.datatype.number({ min: 0, max: recordCount - 1 })],
-    createdAt: faker.date.recent(3),
+    createdAt: faker.date.recent(60),
     updatedAt: faker.date.recent(1),
   }
   asset_assignments.push(asset_assignment);
