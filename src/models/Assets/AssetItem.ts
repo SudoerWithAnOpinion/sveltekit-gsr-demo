@@ -69,6 +69,7 @@ export default class AssetItem extends Model<
 
     declare getAssignments: HasManyGetAssociationsMixin<AssetAssignment>;
     declare getShipments: HasManyGetAssociationsMixin<Shipment>;
+    declare getMaintenances: HasManyGetAssociationsMixin<Maintenance>;
 
     // Virtual Fields
     get isRetired(): NonAttribute<boolean> {

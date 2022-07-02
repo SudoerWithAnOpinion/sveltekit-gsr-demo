@@ -3,6 +3,7 @@
     import type { MaintenanceAttributes } from '$models/Assets/Maintenance/Maintenance';
     import MaintenanceStatusIcon from '$components/Asset/Maintenance/MaintenanceStatusIcon.svelte';
     import MaintenanceResultIcon from '$components/Asset/Maintenance/MaintenanceResultIcon.svelte';
+import AssetTypeIcon from '$components/Asset/AssetTypeIcon.svelte';
     export let maintenance: MaintenanceAttributes;
     $: maintenance;
 
@@ -25,8 +26,13 @@
         Maintenance Record #{maintenance.maintenanceId}
     </div>
     <div class="p-6">
-    
-    
+        <!-- Asset Summary -->
+        <div class="text-xl mb-4">
+            <a href="/assets/{maintenance.Asset.assetId}">
+                <AssetTypeIcon assetType={maintenance.Asset.assetType} />
+                {maintenance.Asset.assetType} {maintenance.Asset.manufacturer} | {maintenance.Asset.modelNumber} | {maintenance.Asset.serialNumber}
+            </a>
+        </div>
 
         <div class="my-2">
             <ol class="relative border-l border-gray-200">                  
@@ -90,11 +96,6 @@
                         </p>
                     </li>
                 {/if}
-                <!-- <li class="mb-10 ml-6">
-                    <span class="flex absolute -left-3 justify-center items-center w-6 h-6 bg-blue-200 rounded-full ring-8 ring-white">
-                        <i class="pl-1 fa-duotone fa-circle-exclamation-check"></i>
-                    </span>
-                </li> -->
             </ol>
         </div>
         
