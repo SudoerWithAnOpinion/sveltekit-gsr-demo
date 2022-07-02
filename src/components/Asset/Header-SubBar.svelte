@@ -19,7 +19,7 @@
 							</a>
 						</li>
 						<li class:active={$page.url.pathname.startsWith('/assets/maintenance')}>
-							<a sveltekit:prefetch href="/employees" class="block text-atento-secondary-grey-2 py-2 pr-4 pl-3">
+							<a sveltekit:prefetch href="/assets/maintenance" class="block text-atento-secondary-grey-2 py-2 pr-4 pl-3">
 								<i class="fa-duotone fa-fw fa-screwdriver-wrench mx-1"></i> Maintenance & Repairs
 							</a>
 						</li>

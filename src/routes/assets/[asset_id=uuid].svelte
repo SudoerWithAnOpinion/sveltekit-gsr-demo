@@ -2,12 +2,6 @@
 	export const prerender = false;
 </script>
 <script lang="ts">
-  type AssetType = Omit<AssetItemAttributes, 'acquisitionDate'|'retirementDate'|'createdAt'|'updatedAt'> & {
-    acquisitionDate: Date | string, 
-    retirementDate: Date | string, 
-    createdAt: Date | string, 
-    updatedAt: Date | string
-  };
   function isoDateString(inputDate: Date | string){
     if (typeof inputDate === 'string') {
       return inputDate;
@@ -18,18 +12,13 @@
   function ymdDate(inputDate: Date | string){
     return DateTime.fromISO(isoDateString(inputDate)).toFormat('yyyy-MM-dd');
   }
-
   import AssetConditionIcon from '$components/Asset/AssetConditionIcon.svelte';
   import AssetTypeIcon from '$components/Asset/AssetTypeIcon.svelte';
   import type {AssetItemAttributes} from '$models/Assets/AssetItem';
   import type {AssetAssignmentAttributes} from '$models/Assets/AssetAssignment';
   import {DateTime} from 'luxon';
-  export let asset: AssetType
-  export let assignments: AssetAssignmentAttributes[];
-  export let assignments_AssignedToEmployee: string[]|null[];
+  export let asset: AssetItemAttributes;
   $: asset;
-  $: assignments;
-  $: assignments_AssignedToEmployee;
 </script>
 <div class="flex justify-center">
   <div class="block rounded-lg shadow-lg bg-white w-10/12 text-left">
@@ -117,10 +106,11 @@
               </tr>
             </thead>
             <tbody>
-              {#each assignments as assignment, i}
+              {#each asset.Assignments as assignment}
                 <tr>
                   <td>{assignment.assignmentId.substring(24)}</td>
-                  <td>{assignments_AssignedToEmployee[i]}</td>
+                  <!-- TODO: Fix this TS error -->
+                  <td>{assignment.AssignedToEmployee.givenName} {assignment.AssignedToEmployee.familyName}</td>
                   <td>
                     {ymdDate(assignment.assignedOn)}
                     / <AssetConditionIcon condition={assignment.assignedCondition} /> {assignment.assignedCondition}
@@ -148,14 +138,31 @@
             <thead>
               <th colspan="4">Maintenance</th>
               <tr>
-                <th><i class="fa-solid fa-fw fa-rectangle-barcode"></i> Repair ID</th>
-                <th><i class="fa-duotone fa-fw fa-user-doctor"></i> Repaired By</th>
+                <th><i class="fa-solid fa-fw fa-rectangle-barcode"></i> ID</th>
+                <th><i class="fa-duotone fa-fw fa-user-doctor"></i> Performed By</th>
                 <th><i class="fa-solid fa-fw fa-inbox-in"></i> Checked In</th>
                 <th><i class="fa-solid fa-fw fa-inbox-out"></i> Completed</th>
               </tr>
             </thead>
             <tbody>
-              <!-- TODO: Asset Maintenance -->
+                {#each asset.Maintenances as maintenance}
+                    <tr>
+                        <td>
+                            <a href="/assets/maintenance/{maintenance.maintenanceId}">
+                                {maintenance.maintenanceId.substring(24)}
+                            </a>
+                        </td>
+                        <td>
+                            {maintenance.PerformedByEmployee.givenName} {maintenance.PerformedByEmployee.familyName}
+                        </td>
+                        <td>
+                            {ymdDate(maintenance.checkInAt)}
+                        </td>
+                        <td>
+                            {maintenance.finishedAt === null ? '' : ymdDate(maintenance.finishedAt)}
+                        </td>
+                    </tr>
+                {/each}
             </tbody>
           </table>
         </div>

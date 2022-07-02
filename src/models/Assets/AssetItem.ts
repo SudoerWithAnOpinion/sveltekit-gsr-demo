@@ -19,10 +19,10 @@ import {
 import type { AssetType } from './_enums';
 
 import AssetAssignment from '$models/Assets/AssetAssignment';
-// import AssetRepair from './AssetRepair';
-import Employee from '../Employee/Employee';
-// import AssetShipment from './Shipping/AssetShipment';
-// import ShippingContents from './Shipping/ShippingContents';
+import Maintenance from '$models/Assets/Maintenance/Maintenance';
+import Employee from '$models/Employee/Employee';
+import Shipment from '$models/Assets/Shipping/Shipment';
+import ShipmentContents from '$models/Assets/Shipping/ShipmentContents';
 
 
 export default class AssetItem extends Model<
@@ -50,10 +50,16 @@ export default class AssetItem extends Model<
     declare enteredByEmployee?: NonAttribute<Employee>;
     declare retiredByEmployee?: NonAttribute<Employee>;
     declare Assignments?: NonAttribute<AssetAssignment>;
+    /** Shipments of this asset */
+    declare Shipments?: NonAttribute<Shipment>;
+    /** Maintenance records of this asset */
+    declare Maintenances?: NonAttribute<Maintenance>;
     declare static associations: {
         enteredByEmployee: Association<AssetItem, Employee>;
         retiredByEmployee: Association<AssetItem, Employee>;
         Assignments: Association<AssetItem, AssetAssignment>;
+        Shipments: Association<AssetItem, Shipment>;
+        Maintenances: Association<AssetItem, Maintenance>;
     };
     declare getEnteredByEmployee: BelongsToGetAssociationMixin<Employee>;
     declare setEnteredByEmployee: BelongsToSetAssociationMixin<Employee, Employee['id']>;
@@ -62,6 +68,8 @@ export default class AssetItem extends Model<
     declare setRetiredByEmployee: BelongsToSetAssociationMixin<Employee, Employee['id']>;
 
     declare getAssignments: HasManyGetAssociationsMixin<AssetAssignment>;
+    declare getShipments: HasManyGetAssociationsMixin<Shipment>;
+    declare getMaintenances: HasManyGetAssociationsMixin<Maintenance>;
 
     // Virtual Fields
     get isRetired(): NonAttribute<boolean> {
@@ -72,6 +80,8 @@ export type AssetItemAttributes = Attributes<AssetItem> & {
     enteredByEmployee: Attributes<Employee>;
     retiredByEmployee: Attributes<Employee>;
     Assignments: Attributes<AssetAssignment>[];
+    Shipments: Attributes<Shipment>[];
+    Maintenances: Attributes<Maintenance>[];
 };
 
 export function init(sequelize: Sequelize) {
@@ -170,17 +180,25 @@ export function associate() {
         foreignKey: 'enteredBy',
         targetKey: 'id',
         as: 'enteredByEmployee',
+        onDelete: 'cascade',
+        onUpdate: 'cascade',
     });
+
     AssetItem.belongsTo(Employee, {
         foreignKey: 'retiredBy',
         targetKey: 'id',
         as: 'retiredByEmployee',
+        onDelete: 'cascade',
+        onUpdate: 'cascade',
     });
+
     // AssetItem 1->M AssetAssignment
     AssetItem.hasMany(AssetAssignment, {
         foreignKey: 'assetUUID',
         sourceKey: 'assetId',
         as: 'Assignments',
+        onDelete: 'cascade',
+        onUpdate: 'cascade',
     });
 
     // AssetItem M->M Employee
@@ -191,6 +209,28 @@ export function associate() {
         targetKey: 'id',
         otherKey: 'assignedToEmployeeUUID',
         as: 'AssignmentsToEmployees',
+        onDelete: 'cascade',
+        onUpdate: 'cascade',
     });
 
+    // AssetItem M->M Shipment
+    AssetItem.belongsToMany(Shipment, {
+        through: ShipmentContents,
+        sourceKey: 'assetId',
+        foreignKey: 'assetId',
+        targetKey: 'shipmentId',
+        otherKey: 'shipmentId',
+        as: 'Shipments',
+        onDelete: 'cascade',
+        onUpdate: 'cascade',
+    });
+
+    // AssetItem 1->M Maintenance
+    AssetItem.hasMany(Maintenance, {
+        foreignKey: 'assetId',
+        sourceKey: 'assetId',
+        as: 'Maintenances',
+        onDelete: 'cascade',
+        onUpdate: 'cascade',
+    });
 }

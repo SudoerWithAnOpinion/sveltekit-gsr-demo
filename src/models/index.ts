@@ -9,6 +9,7 @@ import AssetItem, * as AssetItemModel from './Assets/AssetItem';
 import AssetAssignment, * as AssetAssignmentModel from './Assets/AssetAssignment';
 import Shipment, * as ShipmentModel from './Assets/Shipping/Shipment';
 import ShipmentContents, * as ShipmentContentsModel from './Assets/Shipping/ShipmentContents';
+import Maintenance, * as MaintenanceModel from './Assets/Maintenance/Maintenance';
 
 let dbConfig: Options;
 if (process.env.NODE_ENV === 'production' && process.env.SEQUELIZE_PROD_CONFIG === undefined) {
@@ -42,6 +43,7 @@ const Models = [
     AssetAssignmentModel,
     ShipmentModel,
     ShipmentContentsModel,
+    MaintenanceModel,
 ];
 
 Models.forEach((model) => model.init(sequelize));
@@ -57,4 +59,5 @@ export {
     AssetAssignment,
     Shipment,
     ShipmentContents,
+    Maintenance,
 };
