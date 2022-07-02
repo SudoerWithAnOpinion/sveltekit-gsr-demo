@@ -1,27 +1,14 @@
-<script context="module">
-	import { browser, dev } from '$app/env';
-	// we don't need any JS on this page, though we'll load
-	// it in dev so that we get hot module replacement...
-	export const hydrate = dev;
-	// ...but if the client-side router is already loaded
-	// (i.e. we came here from elsewhere in the app), use it
-	export const router = browser;
-	// since there is dynamic data here, we can't prerender
-	export const prerender = false;
-</script>
-
 <script lang="ts">
 	import CountryFilter from '$components/Filters/CountryFilter.svelte';
 	let filterCountry: string[];
 	$: filters = {
 		country: filterCountry
 	}
-
 	import EmployeeTableRow from '$components/employee/EmployeeTableRow.svelte';
-	$: employees = [
-		{givenName:'Tess', surname:'Testerson'},
-		{id:123456, givenName:'John', surname:'Doe'},
-	]; // TODO: Use real data, not this placeholder
+	import type { EmployeeAttributes } from '$models/Employee/Employee';
+	export let employees: EmployeeAttributes[];
+	$: employees;
+
 </script>
 
 <svelte:head>

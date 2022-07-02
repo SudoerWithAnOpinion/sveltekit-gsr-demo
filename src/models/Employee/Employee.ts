@@ -19,12 +19,19 @@ export default class Employee extends Model<
     InferAttributes<Employee>,
     InferCreationAttributes<Employee>
 > {
+    /** Internal Database ID */
     declare id: CreationOptional<string>;
+    /** First Name */
     declare givenName: string;
+    /** Last Name */
     declare familyName: string;
+    /** (Personal) Email Address */
     declare email: string;
+    /** (Personal) Phone Number */
     declare phone: string;
+
     declare homeAddress: string;
+    /** (Personal) Mailing Address, null if same as homeAddress */
     declare mailingAddress: CreationOptional<string | null>;
 
     // Timestamps

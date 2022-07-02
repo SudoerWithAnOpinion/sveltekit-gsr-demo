@@ -1,15 +1,17 @@
 <script lang="ts">
-    export let employee:Record<string, any>;
+    import type { EmployeeAttributes } from "$models/Employee/Employee";
+    export let employee:EmployeeAttributes;
+    $: employee;
 </script>
 
 <tr>
-    <td>{employee.id}</td>
+    <td><a href="./employees/{employee.id}">{employee.id.substring(24)}</a></td>
     <td>{employee.givenName}</td>
-    <td>{employee.surname}</td>
-    <td>{employee.campaign}</td>
-    <td>{employee.costCenter}</td>
-    <td>{employee.type}</td>
-    <td>{employee.status}</td>
+    <td>{employee.familyName}</td>
+    <td>NOT IMPLEMENTED[HR.Lifecycle]</td>
+    <td>NOT IMPLEMENTED[HR.Lifecycle]</td>
+    <td>NOT IMPLEMENTED[HR.Lifecycle]</td>
+    <td>NOT IMPLEMENTED[HR.Lifecycle]}</td>
 </tr>
 <style>
     td{

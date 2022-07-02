@@ -2,6 +2,7 @@
     import {DateTime} from 'luxon';
     import type { ShipmentAttributes } from '$models/Assets/Shipping/Shipment';
     import CourierIcon from '$components/Asset/Shipping/CourierIcon.svelte';
+    import { ArrivalType } from '$models/Assets/Shipping/_enums';
 
     export let shipment: ShipmentAttributes;
     $: shipment;
@@ -15,7 +16,6 @@
     function ymdDate(inputDate: Date | string){
         return DateTime.fromISO(isoDateString(inputDate)).toFormat('yyyy-MM-dd');
     }
-
     /**
      * @remarks Determines if there is an exception for this shipment
      *          - Courier Issue (TODO!)
@@ -41,16 +41,23 @@
         {/if}
     </div>
     <div class="p-6">
-        Shipped By: {shipment.shippedByEmployee.givenName} {shipment.shippedByEmployee.familyName} <br>
-        Reason: {shipment.reason} <br>
-        Destination: {shipment.destination} <br>
+        <span class="text-atento-secondary-grey-4">Shipped By:</span>
+        <a href="/employees/{shipment.shippedByEmployee.id}"> {shipment.shippedByEmployee.givenName} {shipment.shippedByEmployee.familyName}</a> <br>
+        <span class="text-atento-secondary-grey-4">Reason:</span> {shipment.reason} <br>
+        <span class="text-atento-secondary-grey-4">Destination:</span> {shipment.destination} <br>
 
-        <span class="inline-block align-top">Delivery Details: </span>
+        <span class="inline-block align-top text-center">Delivery Details:
+            <!-- TS says this is an error, but it works -->
+            {#if shipment.arrivalType == ArrivalType[ArrivalType.DELIVERY_CONFIRMED]}
+               <br> <i class="text-green-600 fa-duotone fa-2xl fa-box-circle-check"></i>
+            
+            {/if}
+        </span>
         {#if shipment.arrivalAt !== null}
             <span class="inline-block">
                 Date: {ymdDate(shipment.arrivalAt)} <br>
-                arrivalType: {shipment.arrivalType} <br>
-                arrivalAcknowledgedBy: {shipment.arrivalAcknowledgedByEmployee.givenName} {shipment.arrivalAcknowledgedByEmployee.familyName} <br>
+                Code: {shipment.arrivalType} <br>
+                Entered By: {shipment.arrivalAcknowledgedByEmployee.givenName} {shipment.arrivalAcknowledgedByEmployee.familyName} <br>
             </span>
             
         {:else}
