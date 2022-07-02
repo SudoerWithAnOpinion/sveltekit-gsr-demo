@@ -11,7 +11,7 @@
 </script>
 
 <script lang="ts">
-	import CountryFilter from '$lib/filter/CountryFilter.svelte';
+	import CountryFilter from '$components/Filters/CountryFilter.svelte';
 	let filterCountry: string[];
 	$: filters = {
 		country: filterCountry
