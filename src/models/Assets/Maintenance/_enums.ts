@@ -31,11 +31,14 @@ export enum MaintenanceType {
 
     /** Software Repair: Repair of malfunctioning application */
     SOFTWARE_REPAIR = 'SOFTWARE_REPAIR',
+
+    /** Preventative mainenance (cleaning, testing, etc.) */
+    PREVENTATIVE = 'PREVENTATIVE',
 }
 
 export enum MaintenanceResult {
     /** Maintenance was completed successfully */
-    COMPELTE = 'COMPLETE',
+    COMPLETE = 'COMPLETE',
     /** Unable to repair damage */
     UNABLE_TO_REPAIR = 'UNABLE_TO_REPAIR',
     /** Maintenance was not completed: No available parts */

@@ -25,7 +25,7 @@ module.exports = {
   },
   async down(queryInterface, Sequelize) {
     return queryInterface.bulkDelete('auth_userpass', { where: { username: 'admin' } }).then(() => { 
-      queryInterface.bulkDelete('employees', { where: { id: '00000000-0000-0000-0000-000000000001' } });
+      queryInterface.bulkDelete('employees', { id: '00000000-0000-0000-0000-000000000001'});
     })
   }
 };

@@ -13,6 +13,7 @@ import {
     Association,
     DataTypes,
     Model,
+    Op,
     Sequelize,
 } from 'sequelize';
 
@@ -47,7 +48,7 @@ export default class Maintenance extends Model<
     /** Type of maintenance */
     declare maintenanceType: MaintenanceType;
     /** DateTime of repair start */
-    declare startedAt: Date;
+    declare startedAt: Date | null;
     /** DateTime of repair completion */
     declare finishedAt: Date | null;
     /** Repair/Maint. Notes */
@@ -62,9 +63,9 @@ export default class Maintenance extends Model<
     declare updatedAt: CreationOptional<Date>;
 
     // Associations
-    declare Asset?: BelongsToGetAssociationMixin<AssetItem>;
-    declare CheckedInByEmployee?: BelongsToGetAssociationMixin<Employee>;
-    declare PerformedByEmployee?: BelongsToGetAssociationMixin<Employee>;
+    declare Asset?: NonAttribute<AssetItem>;
+    declare CheckedInByEmployee?: NonAttribute<Employee>;
+    declare PerformedByEmployee?: NonAttribute<Employee>;
     declare static associations: {
         Asset: Association<Maintenance, AssetItem>;
         CheckedInByEmployee: Association<Maintenance, Employee>;
@@ -73,8 +74,13 @@ export default class Maintenance extends Model<
     declare getAsset: BelongsToGetAssociationMixin<AssetItem>;
     declare getCheckedInByEmployee: BelongsToGetAssociationMixin<Employee>;
     declare getPerformedByEmployee: BelongsToGetAssociationMixin<Employee>;
+
 }
-export type MaintenanceAttributes = Attributes<Maintenance>;
+export type MaintenanceAttributes = Attributes<Maintenance> & {
+    Asset: Attributes<AssetItem>;
+    CheckedInByEmployee: Attributes<Employee>;
+    PerformedByEmployee: Attributes<Employee>;
+};
 
 export function init(sequelize: Sequelize) {
     Maintenance.init({
@@ -122,7 +128,7 @@ export function init(sequelize: Sequelize) {
         },
         startedAt: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true,
         },
         finishedAt: {
             type: DataTypes.DATE,
@@ -179,4 +185,5 @@ export function associate() {
         targetKey: 'id',
         as: 'PerformedByEmployee'
     });
+
 }
