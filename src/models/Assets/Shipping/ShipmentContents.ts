@@ -28,19 +28,22 @@ export default class ShipmentContents extends Model<
     declare shipmentId: ForeignKey<Shipment['shipmentId']>;
     declare assetId: ForeignKey<AssetItem['assetId']>;
 
-    declare shipment: NonAttribute<Shipment>;
-    declare asset: NonAttribute<AssetItem>;
+    declare Shipment?: NonAttribute<Shipment>;
+    declare Asset?: NonAttribute<AssetItem>;
 
     declare static associations: {
-        shipment: Association<ShipmentContents, Shipment>;
-        asset: Association<ShipmentContents, AssetItem>;
+        Shipment: Association<ShipmentContents, Shipment>;
+        Asset: Association<ShipmentContents, AssetItem>;
     };
 
     declare getShipment: BelongsToGetAssociationMixin<Shipment>;
     declare getAsset: BelongsToGetAssociationMixin<AssetItem>;
 }
 
-export type ShipmentContentsAttributes = Attributes<ShipmentContents>;
+export type ShipmentContentsAttributes = Attributes<ShipmentContents> & {
+    Shipment: Shipment['shipmentId'];
+    Asset: AssetItem['assetId'];
+};
 
 export function init(sequelize: Sequelize): void {
     ShipmentContents.init({
@@ -73,6 +76,7 @@ export function init(sequelize: Sequelize): void {
         timestamps: false
     });
 }
+
 export function associate() {
     // ShipmentContents.shipmentId M=>1 Shipment.id
     ShipmentContents.belongsTo(Shipment, {

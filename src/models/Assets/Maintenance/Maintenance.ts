@@ -62,9 +62,9 @@ export default class Maintenance extends Model<
     declare updatedAt: CreationOptional<Date>;
 
     // Associations
-    declare Asset: BelongsToGetAssociationMixin<AssetItem>;
-    declare CheckedInByEmployee: BelongsToGetAssociationMixin<Employee>;
-    declare PerformedByEmployee: BelongsToGetAssociationMixin<Employee>;
+    declare Asset?: BelongsToGetAssociationMixin<AssetItem>;
+    declare CheckedInByEmployee?: BelongsToGetAssociationMixin<Employee>;
+    declare PerformedByEmployee?: BelongsToGetAssociationMixin<Employee>;
     declare static associations: {
         Asset: Association<Maintenance, AssetItem>;
         CheckedInByEmployee: Association<Maintenance, Employee>;
