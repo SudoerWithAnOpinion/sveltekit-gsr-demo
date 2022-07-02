@@ -67,8 +67,8 @@ module.exports = {
     });
   },
   async down (queryInterface, Sequelize) {
-    return queryInterface.bulkDelete('asset_shipment_contents', { where: { shipmentId: shipmentIds } }).then(() => { 
-      queryInterface.bulkDelete('asset_shipments', { where: {shipmentId: shipmentIds} });
+    return queryInterface.bulkDelete('asset_shipment_contents', { shipmentId: shipmentIds }).then(() => { 
+      queryInterface.bulkDelete('asset_shipments', {shipmentId: shipmentIds});
     });
   }
 };
