@@ -42,10 +42,6 @@ export default class FIDO2 extends Model<
 
     declare getEmployee: BelongsToGetAssociationMixin<Employee>;
 }
-export type FIDO2Attributes = Attributes<FIDO2> & {
-    Employee: Attributes<Employee>
-};
-
 export function init(sequelize: Sequelize) {
     FIDO2.init({
         authenticatorId: {
