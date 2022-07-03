@@ -22,11 +22,11 @@ import type {
     MaintenanceCheckInReason,
     MaintenanceResult
 } from './_enums';
-import AssetItem from '$models/Assets/AssetItem';
-import Employee from '$models/Employee/Employee';
+import type { AssetItem } from '$models/Assets/AssetItem';
+import type { Employee } from '$models/Employee/Employee';
 
 
-export default class Maintenance extends Model<
+export class Maintenance extends Model<
     InferAttributes<Maintenance>,
     InferCreationAttributes<Maintenance>
 >{
@@ -82,7 +82,7 @@ export type MaintenanceAttributes = Attributes<Maintenance> & {
     PerformedByEmployee: Attributes<Employee>;
 };
 
-export function init(sequelize: Sequelize) {
+export default function init(sequelize: Sequelize) {
     Maintenance.init({
         maintenanceId: {
             type: DataTypes.UUIDV4,
@@ -94,7 +94,7 @@ export function init(sequelize: Sequelize) {
             type: DataTypes.UUIDV4,
             allowNull: false,
             references: {
-                model: AssetItem,
+                model: 'asset_items',
                 key: 'assetId',
             },
         },
@@ -106,7 +106,7 @@ export function init(sequelize: Sequelize) {
             type: DataTypes.UUIDV4,
             allowNull: false,
             references: {
-                model: Employee,
+                model: 'employees',
                 key: 'id',
             },
         },
@@ -142,7 +142,7 @@ export function init(sequelize: Sequelize) {
             type: DataTypes.UUIDV4,
             allowNull: false,
             references: {
-                model: Employee,
+                model: 'employees',
                 key: 'id',
             },
         },
@@ -168,19 +168,20 @@ export function init(sequelize: Sequelize) {
         createdAt: 'createdAt',
         updatedAt: 'updatedAt',
     });
+    return Maintenance;
 }
-export function associate() {
-    Maintenance.belongsTo(AssetItem, {
+export function associate(models: any) {
+    Maintenance.belongsTo(models.AssetItem, {
         foreignKey: 'assetId',
         targetKey: 'assetId',
         as: 'Asset'
     });
-    Maintenance.belongsTo(Employee, {
+    Maintenance.belongsTo(models.Employee, {
         foreignKey: 'checkedInBy',
         targetKey: 'id',
         as: 'CheckedInByEmployee'
     });
-    Maintenance.belongsTo(Employee, {
+    Maintenance.belongsTo(models.Employee, {
         foreignKey: 'performedBy',
         targetKey: 'id',
         as: 'PerformedByEmployee'

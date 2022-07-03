@@ -1,8 +1,8 @@
-import { AssetItem } from '$models';
+import models from '$models';
 import type { RequestHandler } from './__types';
 
 export const get: RequestHandler = async (event) => {
-    const assetList = await AssetItem.findAll({
+    const assetList = await models.AssetItem.findAll({
         // where: {
         //     assetType: event.params.filter_assetType,
         //     modelNumber: event.params.filter_assetModel,

@@ -12,10 +12,10 @@ import {
     Sequelize,
 } from 'sequelize';
 
-import AssetItem from '$models/Assets/AssetItem';
-import AssetAssignment from '$models/Assets/AssetAssignment';
+import type { AssetItem } from '$models/Assets/AssetItem';
+import type { AssetAssignment } from '$models/Assets/AssetAssignment';
 
-export default class Employee extends Model<
+export class Employee extends Model<
     InferAttributes<Employee>,
     InferCreationAttributes<Employee>
 > {
@@ -64,7 +64,7 @@ export default class Employee extends Model<
 }
 export type EmployeeAttributes = InferAttributes<Employee>;
 
-export function init(sequelize: Sequelize) {
+export default function init(sequelize: Sequelize) {
     Employee.init(
         {
             id: {
@@ -118,10 +118,11 @@ export function init(sequelize: Sequelize) {
             updatedAt: 'updatedAt',
         }
     );
+    return Employee;
 }
-export function associate() {
+export function associate(models: any) {
     // Employee 1->M AssetItems.enteredBy
-    Employee.hasMany(AssetItem, {
+    Employee.hasMany(models.AssetItem, {
         as: 'AssetItemsEntered',
         foreignKey: 'enteredBy',
         sourceKey: 'id',
@@ -129,7 +130,7 @@ export function associate() {
         onUpdate: 'restrict',
     });
     // Employee 1->M AssetItems.retiredBy
-    Employee.hasMany(AssetItem, {
+    Employee.hasMany(models.AssetItem, {
         as: 'AssetItemsRetired',
         foreignKey: 'retiredBy',
         sourceKey: 'id',
@@ -138,7 +139,7 @@ export function associate() {
     });
 
     // Employee 1->M AssetAssignments.assignedToEmployeeUUID
-    Employee.hasMany(AssetAssignment, {
+    Employee.hasMany(models.AssetAssignment, {
         as: 'AssetAssignmentsAssignedTo',
         foreignKey: 'assignedToEmployeeUUID',
         sourceKey: 'id',

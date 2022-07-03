@@ -15,9 +15,9 @@ import {
     Sequelize,
 } from 'sequelize';
 
-import Employee from '$models/Employee/Employee';
+import { Employee } from '$models/Employee/Employee';
 
-export default class UserPass extends Model<
+export class UserPass extends Model<
     InferCreationAttributes<UserPass>,
     InferAttributes<UserPass>
 >{
@@ -45,7 +45,7 @@ export type UserPassAttributes = Attributes<UserPass> & {
     Employee: Attributes<Employee>
 };
 
-export function init(sequelize: Sequelize) {
+export default function init(sequelize: Sequelize) {
     UserPass.init({
         username: {
             type: DataTypes.STRING,
@@ -92,10 +92,11 @@ export function init(sequelize: Sequelize) {
         tableName: 'auth_userpass',
         timestamps: true,
     });
+    return UserPass;
 }
 
-export function associate() {
-    UserPass.belongsTo(Employee, {
+export function associate(models: any) {
+    UserPass.belongsTo(models.Employee, {
         foreignKey: 'employeeId',
         targetKey: 'id',
         as: 'Employee',

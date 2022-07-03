@@ -16,10 +16,10 @@ import {
     Sequelize,
 } from 'sequelize';
 
-import AssetItem from '$models/Assets/AssetItem';
-import Shipment from '$models/Assets/Shipping/Shipment';
+import type { AssetItem } from '$models/Assets/AssetItem';
+import type { Shipment } from '$models/Assets/Shipping/Shipment';
 
-export default class ShipmentContents extends Model<
+export class ShipmentContents extends Model<
     InferAttributes<ShipmentContents>,
     InferCreationAttributes<ShipmentContents>
 > {
@@ -45,7 +45,7 @@ export type ShipmentContentsAttributes = Attributes<ShipmentContents> & {
     Asset: AssetItem['assetId'];
 };
 
-export function init(sequelize: Sequelize): void {
+export default function init(sequelize: Sequelize) {
     ShipmentContents.init({
         id: {
             type: DataTypes.UUID,
@@ -57,7 +57,7 @@ export function init(sequelize: Sequelize): void {
             type: DataTypes.UUID,
             allowNull: false,
             references: {
-                model: Shipment,
+                model: 'asset_shipments',
                 key: 'shipmentId',
             },
         },
@@ -65,7 +65,7 @@ export function init(sequelize: Sequelize): void {
             type: DataTypes.UUID,
             allowNull: false,
             references: {
-                model: AssetItem,
+                model: 'asset_items',
                 key: 'assetId',
             },
         }
@@ -75,16 +75,17 @@ export function init(sequelize: Sequelize): void {
         tableName: 'asset_shipment_contents',
         timestamps: false
     });
+    return ShipmentContents;
 }
 
-export function associate() {
+export function associate(models: any) {
     // ShipmentContents.shipmentId M=>1 Shipment.id
-    ShipmentContents.belongsTo(Shipment, {
+    ShipmentContents.belongsTo(models.Shipment, {
         foreignKey: 'shipmentId',
         as: 'shipment',
     });
     // ShipmentContents.assetId M=>1 AssetItem.id
-    ShipmentContents.belongsTo(AssetItem, {
+    ShipmentContents.belongsTo(models.AssetItem, {
         foreignKey: 'assetId',
         as: 'asset',
     });

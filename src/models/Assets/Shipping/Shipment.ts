@@ -16,13 +16,13 @@ import {
     Sequelize,
 } from 'sequelize';
 
-import AssetItem from '$models/Assets/AssetItem';
-import Employee from '$models/Employee/Employee';
-import ShipmentContents from '$models/Assets/Shipping/ShipmentContents';
+import type { AssetItem } from '$models/Assets/AssetItem';
+import type { Employee } from '$models/Employee/Employee';
+import type { ShipmentContents } from '$models/Assets/Shipping/ShipmentContents';
 
 import type { ShippingReason, ArrivalType, Courier } from './_enums';
 
-export default class Shipment extends Model<
+export class Shipment extends Model<
     InferAttributes<Shipment>,
     InferCreationAttributes<Shipment>
 > {
@@ -63,7 +63,7 @@ export type ShipmentAttributes = Attributes<Shipment> & {
     arrivalAcknowledgedByEmployee: Attributes<Employee>;
     contents: Attributes<AssetItem>[];
 };
-export function init(sequelize: Sequelize): void {
+export default function init(sequelize: Sequelize) {
     Shipment.init({
         shipmentId: {
             type: DataTypes.UUID,
@@ -107,7 +107,7 @@ export function init(sequelize: Sequelize): void {
             type: DataTypes.UUID,
             allowNull: true,
             references: {
-                model: Employee,
+                model: 'employees',
                 key: 'id',
             }
         },
@@ -155,25 +155,26 @@ export function init(sequelize: Sequelize): void {
             },
         }
     });
+    return Shipment;
 }
-export function associate() {
+export function associate(models: any) {
     // Shipment.shippedBy M-1 Employee.id
-    Shipment.belongsTo(Employee, {
+    Shipment.belongsTo(models.Employee, {
         foreignKey: 'shippedBy',
         targetKey: 'id',
         as: 'shippedByEmployee',
     });
 
     // Shipment.arrivalAcknowledgedBy M-1 Employee.id
-    Shipment.belongsTo(Employee, {
+    Shipment.belongsTo(models.Employee, {
         foreignKey: 'arrivalAcknowledgedBy',
         targetKey: 'id',
         as: 'arrivalAcknowledgedByEmployee',
     });
 
     // Shipment.assetItems M=N AssetItem.id
-    Shipment.belongsToMany(AssetItem, {
-        through: ShipmentContents,
+    Shipment.belongsToMany(models.AssetItem, {
+        through: models.ShipmentContents,
         foreignKey: 'shipmentId',
         sourceKey: 'shipmentId',
         otherKey: 'assetId',
@@ -182,7 +183,7 @@ export function associate() {
 
     });
     // Shipment.shipmentId 1-M ShipmentContents.shipmentId
-    Shipment.hasMany(ShipmentContents, {
+    Shipment.hasMany(models.ShipmentContents, {
         foreignKey: 'shipmentId',
         sourceKey: 'shipmentId',
     })

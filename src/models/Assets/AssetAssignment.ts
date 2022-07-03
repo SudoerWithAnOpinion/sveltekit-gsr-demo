@@ -18,11 +18,11 @@ import {
 
 import type { AssetCondition } from './_enums';
 
-import AssetItem from '$models/Assets/AssetItem';
-import Employee from '$models/Employee/Employee';
+import { AssetItem } from '$models/Assets/AssetItem';
+import { Employee } from '$models/Employee/Employee';
 
 
-export default class AssetAssignment extends Model<
+export class AssetAssignment extends Model<
     InferAttributes<AssetAssignment>,
     InferCreationAttributes<AssetAssignment>
 > {
@@ -88,7 +88,7 @@ export type AssetAssignmentAttributes = Attributes<AssetAssignment> & {
     ReturnEntryByEmployee: Employee;
 };
 
-export function init(sequelize: Sequelize) {
+export default function init(sequelize: Sequelize) {
     AssetAssignment.init(
         {
             assignmentId: {
@@ -193,28 +193,29 @@ export function init(sequelize: Sequelize) {
             },
         }
     );
+    return AssetAssignment;
 }
-export function associate() {
+export function associate(models: any) {
     // AssetAssignment M=>1 AssetItem
-    AssetAssignment.belongsTo(AssetItem, {
+    AssetAssignment.belongsTo(models.AssetItem, {
         foreignKey: 'assetUUID',
         targetKey: 'assetId',
         as: 'AssetItem',
     });
     // AssetAssignment M->1 Employee (Assigned To Employee)
-    AssetAssignment.belongsTo(Employee, {
+    AssetAssignment.belongsTo(models.Employee, {
         foreignKey: 'assignedToEmployeeUUID',
         targetKey: 'id',
         as: 'AssignedToEmployee',
     });
     // AssetAssignment M->1 Employee (Assigment Entry By Employee)
-    AssetAssignment.belongsTo(Employee, {
+    AssetAssignment.belongsTo(models.Employee, {
         foreignKey: 'assignedEntryBy',
         targetKey: 'id',
         as: 'AssignmentEntryByEmployee',
     });
     // AssetAssignment M->1 Employee (Return Entry By Employee)
-    AssetAssignment.belongsTo(Employee, {
+    AssetAssignment.belongsTo(models.Employee, {
         foreignKey: 'returnEntryBy',
         targetKey: 'id',
         as: 'ReturnEntryByEmployee',

@@ -16,9 +16,9 @@ import {
 } from 'sequelize';
 
 import type { AssetConsumableType, AssetType } from './_enums';
-import type Employee from '../Employee/Employee';
+import { Employee } from '../Employee/Employee';
 
-export default class AssetConsumable extends Model<
+export class AssetConsumable extends Model<
     InferAttributes<AssetConsumable>,
     InferCreationAttributes<AssetConsumable>
 > {

@@ -1,8 +1,8 @@
-import { Shipment } from '$models';
+import models from '$models';
 import type { RequestHandler } from './__types';
 
 export const get: RequestHandler = async (event) => {
-    const shipmentList = await Shipment.findAll({
+    const shipmentList = await models.Shipment.findAll({
         include: ['shippedByEmployee', 'arrivalAcknowledgedByEmployee', 'contents'],
     }).then(shipments => {
         return shipments.map(shipment => {

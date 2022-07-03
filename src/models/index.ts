@@ -3,13 +3,13 @@ import { Sequelize } from 'sequelize';
 // const dbConfig = await import('../../sequelize.config.cjs');
 import * as dbConfigFile from '../../sequelize.config.json';
 
-import Employee, * as EmployeeModel from './Employee/Employee';
-import UserPass, * as UserPassModel from './Authentication/UserPass';
-import AssetItem, * as AssetItemModel from './Assets/AssetItem';
-import AssetAssignment, * as AssetAssignmentModel from './Assets/AssetAssignment';
-import Shipment, * as ShipmentModel from './Assets/Shipping/Shipment';
-import ShipmentContents, * as ShipmentContentsModel from './Assets/Shipping/ShipmentContents';
-import Maintenance, * as MaintenanceModel from './Assets/Maintenance/Maintenance';
+import Employee, { associate as EmployeeAssociate } from './Employee/Employee';
+import UserPass, { associate as UserPassAssociate } from './Authentication/UserPass';
+import AssetItem, { associate as AssetItemAssociate } from './Assets/AssetItem';
+import AssetAssignment, { associate as AssetAssignmentAssociate } from './Assets/AssetAssignment';
+import Shipment, { associate as ShipmentAssociate } from './Assets/Shipping/Shipment';
+import ShipmentContents, { associate as ShipmentContentsAssociate } from './Assets/Shipping/ShipmentContents';
+import Maintenance, { associate as MaintenanceAssociate } from './Assets/Maintenance/Maintenance';
 
 let dbConfig: Options;
 if (process.env.NODE_ENV === 'production' && process.env.SEQUELIZE_PROD_CONFIG === undefined) {
@@ -34,30 +34,25 @@ if (process.env.NODE_ENV === 'production' && process.env.SEQUELIZE_PROD_CONFIG =
 const sequelize = new Sequelize({
     ...dbConfig,
 });
-// Setup Models
-const Models = [
-    EmployeeModel,
-    UserPassModel,
 
-    AssetItemModel,
-    AssetAssignmentModel,
-    ShipmentModel,
-    ShipmentContentsModel,
-    MaintenanceModel,
-];
-
-Models.forEach((model) => model.init(sequelize));
-Models.forEach((model) => model.associate());
-
-export default sequelize;
-export {
+const db = {
     sequelize,
-    sequelize as Sequelize,
-    Employee,
-    UserPass,
-    AssetItem,
-    AssetAssignment,
-    Shipment,
-    ShipmentContents,
-    Maintenance,
+    Sequelize,
+    Employee: Employee(sequelize),
+    UserPass: UserPass(sequelize),
+    AssetItem: AssetItem(sequelize),
+    AssetAssignment: AssetAssignment(sequelize),
+    Shipment: Shipment(sequelize),
+    ShipmentContents: ShipmentContents(sequelize),
+    Maintenance: Maintenance(sequelize),
 };
+
+EmployeeAssociate(sequelize.models);
+UserPassAssociate(sequelize.models);
+AssetItemAssociate(sequelize.models);
+AssetAssignmentAssociate(sequelize.models);
+ShipmentAssociate(sequelize.models);
+ShipmentContentsAssociate(sequelize.models);
+MaintenanceAssociate(sequelize.models);
+
+export default db;

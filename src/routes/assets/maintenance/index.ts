@@ -1,9 +1,9 @@
-import { Maintenance } from '$models';
+import models from '$models';
 import type { RequestHandler } from './__types';
 Date.prototype.toJSON = function () { return this.toISOString(); }
 
 export const get: RequestHandler = async (event) => {
-    const maintenanceList = await Maintenance.findAll({
+    const maintenanceList = await models.Maintenance.findAll({
         include: [
             'Asset', 'CheckedInByEmployee', 'PerformedByEmployee',
         ],

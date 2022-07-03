@@ -18,14 +18,14 @@ import {
 
 import type { AssetType } from './_enums';
 
-import AssetAssignment from '$models/Assets/AssetAssignment';
-import Maintenance from '$models/Assets/Maintenance/Maintenance';
-import Employee from '$models/Employee/Employee';
-import Shipment from '$models/Assets/Shipping/Shipment';
-import ShipmentContents from '$models/Assets/Shipping/ShipmentContents';
+import { AssetAssignment } from '$models/Assets/AssetAssignment';
+import type { Maintenance } from '$models/Assets/Maintenance/Maintenance';
+import { Employee } from '$models/Employee/Employee';
+import type { Shipment } from '$models/Assets/Shipping/Shipment';
+import type { ShipmentContents } from '$models/Assets/Shipping/ShipmentContents';
 
 
-export default class AssetItem extends Model<
+export class AssetItem extends Model<
     InferAttributes<AssetItem>,
     InferCreationAttributes<AssetItem>
 > {
@@ -84,7 +84,7 @@ export type AssetItemAttributes = Attributes<AssetItem> & {
     Maintenances: Attributes<Maintenance>[];
 };
 
-export function init(sequelize: Sequelize) {
+export default function init(sequelize: Sequelize) {
     AssetItem.init(
         {
             assetId: {
@@ -173,10 +173,11 @@ export function init(sequelize: Sequelize) {
             },
         }
     );
+    return AssetItem;
 }
-export function associate() {
+export function associate(models: any) {
     // Association enteredBy -> Employee
-    AssetItem.belongsTo(Employee, {
+    AssetItem.belongsTo(models.Employee, {
         foreignKey: 'enteredBy',
         targetKey: 'id',
         as: 'enteredByEmployee',
@@ -184,7 +185,7 @@ export function associate() {
         onUpdate: 'cascade',
     });
 
-    AssetItem.belongsTo(Employee, {
+    AssetItem.belongsTo(models.Employee, {
         foreignKey: 'retiredBy',
         targetKey: 'id',
         as: 'retiredByEmployee',
@@ -193,7 +194,7 @@ export function associate() {
     });
 
     // AssetItem 1->M AssetAssignment
-    AssetItem.hasMany(AssetAssignment, {
+    AssetItem.hasMany(models.AssetAssignment, {
         foreignKey: 'assetUUID',
         sourceKey: 'assetId',
         as: 'Assignments',
@@ -202,8 +203,8 @@ export function associate() {
     });
 
     // AssetItem M->M Employee
-    AssetItem.belongsToMany(Employee, {
-        through: AssetAssignment,
+    AssetItem.belongsToMany(models.Employee, {
+        through: models.AssetAssignment,
         sourceKey: 'assetId',
         foreignKey: 'assetUUID',
         targetKey: 'id',
@@ -214,8 +215,8 @@ export function associate() {
     });
 
     // AssetItem M->M Shipment
-    AssetItem.belongsToMany(Shipment, {
-        through: ShipmentContents,
+    AssetItem.belongsToMany(models.Shipment, {
+        through: models.ShipmentContents,
         sourceKey: 'assetId',
         foreignKey: 'assetId',
         targetKey: 'shipmentId',
@@ -226,7 +227,7 @@ export function associate() {
     });
 
     // AssetItem 1->M Maintenance
-    AssetItem.hasMany(Maintenance, {
+    AssetItem.hasMany(models.Maintenance, {
         foreignKey: 'assetId',
         sourceKey: 'assetId',
         as: 'Maintenances',
