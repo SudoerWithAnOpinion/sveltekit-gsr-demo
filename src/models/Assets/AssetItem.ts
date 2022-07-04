@@ -17,6 +17,7 @@ import {
 } from 'sequelize';
 
 import type { AssetType } from './_enums';
+import { ArrivalType } from './Shipping/_enums';
 
 import AssetAssignment from '$models/Assets/AssetAssignment';
 import Maintenance from '$models/Assets/Maintenance/Maintenance';
@@ -49,11 +50,11 @@ export default class AssetItem extends Model<
     // Associations
     declare enteredByEmployee?: NonAttribute<Employee>;
     declare retiredByEmployee?: NonAttribute<Employee>;
-    declare Assignments?: NonAttribute<AssetAssignment>;
+    declare Assignments?: NonAttribute<AssetAssignment[]>;
     /** Shipments of this asset */
-    declare Shipments?: NonAttribute<Shipment>;
+    declare Shipments?: NonAttribute<Shipment[]>;
     /** Maintenance records of this asset */
-    declare Maintenances?: NonAttribute<Maintenance>;
+    declare Maintenances?: NonAttribute<Maintenance[]>;
     declare static associations: {
         enteredByEmployee: Association<AssetItem, Employee>;
         retiredByEmployee: Association<AssetItem, Employee>;
@@ -76,13 +77,6 @@ export default class AssetItem extends Model<
         return this.retirementDate === null;
     }
 }
-export type AssetItemAttributes = Attributes<AssetItem> & {
-    enteredByEmployee: Attributes<Employee>;
-    retiredByEmployee: Attributes<Employee>;
-    Assignments: Attributes<AssetAssignment>[];
-    Shipments: Attributes<Shipment>[];
-    Maintenances: Attributes<Maintenance>[];
-};
 
 export function init(sequelize: Sequelize) {
     AssetItem.init(
@@ -146,7 +140,7 @@ export function init(sequelize: Sequelize) {
                 type: DataTypes.DATE,
                 allowNull: false,
                 defaultValue: DataTypes.NOW,
-            },
+            }
         },
         {
             sequelize,

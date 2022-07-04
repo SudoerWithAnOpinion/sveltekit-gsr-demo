@@ -3,9 +3,9 @@
 	export const router = browser;
 </script>
 <script lang="ts">
-    import type {ShipmentAttributes} from '$models/Assets/Shipping/Shipment';
+    import type Shipment from '$models/Assets/Shipping/Shipment';
     import ShipmentListTable from '$components/Asset/Shipping/ShipmentListTable.svelte';
-    export let shipments: ShipmentAttributes[] = [];
+    export let shipments: Shipment[] = [];
     $: shipments;
 </script>
 

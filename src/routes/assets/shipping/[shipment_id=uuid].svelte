@@ -1,6 +1,6 @@
 <script lang="ts">
     import {DateTime} from 'luxon';
-    import type { ShipmentAttributes } from '$models/Assets/Shipping/Shipment';
+    import type ShipmentAttributes from '$models/Assets/Shipping/Shipment';
     import CourierIcon from '$components/Asset/Shipping/CourierIcon.svelte';
     import { ArrivalType } from '$models/Assets/Shipping/_enums';
 

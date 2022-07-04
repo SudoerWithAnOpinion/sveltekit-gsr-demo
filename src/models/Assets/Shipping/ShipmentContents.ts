@@ -40,11 +40,6 @@ export default class ShipmentContents extends Model<
     declare getAsset: BelongsToGetAssociationMixin<AssetItem>;
 }
 
-export type ShipmentContentsAttributes = Attributes<ShipmentContents> & {
-    Shipment: Shipment['shipmentId'];
-    Asset: AssetItem['assetId'];
-};
-
 export function init(sequelize: Sequelize): void {
     ShipmentContents.init({
         id: {
@@ -81,11 +76,11 @@ export function associate() {
     // ShipmentContents.shipmentId M=>1 Shipment.id
     ShipmentContents.belongsTo(Shipment, {
         foreignKey: 'shipmentId',
-        as: 'shipment',
+        as: 'Shipment',
     });
     // ShipmentContents.assetId M=>1 AssetItem.id
     ShipmentContents.belongsTo(AssetItem, {
         foreignKey: 'assetId',
-        as: 'asset',
+        as: 'Asset',
     });
 }

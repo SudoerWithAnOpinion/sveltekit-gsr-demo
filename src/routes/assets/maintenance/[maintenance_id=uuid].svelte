@@ -1,10 +1,10 @@
 <script lang="ts">
     import {DateTime} from 'luxon';
-    import type { MaintenanceAttributes } from '$models/Assets/Maintenance/Maintenance';
+    import type Maintenance from '$models/Assets/Maintenance/Maintenance';
     import MaintenanceStatusIcon from '$components/Asset/Maintenance/MaintenanceStatusIcon.svelte';
     import MaintenanceResultIcon from '$components/Asset/Maintenance/MaintenanceResultIcon.svelte';
 import AssetTypeIcon from '$components/Asset/AssetTypeIcon.svelte';
-    export let maintenance: MaintenanceAttributes;
+    export let maintenance: Maintenance;
     $: maintenance;
 
     function isoDateString(inputDate: Date | string){
@@ -28,9 +28,11 @@ import AssetTypeIcon from '$components/Asset/AssetTypeIcon.svelte';
     <div class="p-6">
         <!-- Asset Summary -->
         <div class="text-xl mb-4">
-            <a href="/assets/{maintenance.Asset.assetId}">
-                <AssetTypeIcon assetType={maintenance.Asset.assetType} />
-                {maintenance.Asset.assetType} {maintenance.Asset.manufacturer} | {maintenance.Asset.modelNumber} | {maintenance.Asset.serialNumber}
+            <a href="/assets/{maintenance.assetId}">
+                {#if maintenance.Asset !== undefined}
+                    <AssetTypeIcon assetType={maintenance.Asset.assetType} />
+                    {maintenance.Asset.assetType} {maintenance.Asset.manufacturer} | {maintenance.Asset.modelNumber} | {maintenance.Asset.serialNumber}
+                {/if}
             </a>
         </div>
 

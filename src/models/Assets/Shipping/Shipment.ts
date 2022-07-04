@@ -48,21 +48,18 @@ export default class Shipment extends Model<
     // Associations
     declare shippedByEmployee: NonAttribute<Employee>;
     declare arrivalAcknowledgedByEmployee: NonAttribute<Employee>;
-    declare contents: NonAttribute<ShipmentContents[]>;
+    declare contents: NonAttribute<AssetItem[]>;
+    declare shipmentBoxes: NonAttribute<ShipmentContents[]>;
     declare public static associations: {
         shippedByEmployee: Association<Shipment, Employee>;
         arrivalAcknowledgedByEmployee: Association<Shipment, Employee>;
         contents: Association<Shipment, AssetItem>;
+        shipmentBoxes: Association<Shipment, ShipmentContents>
     };
     declare getShippedByEmployee: BelongsToGetAssociationMixin<Employee>;
     declare getArrivalAcknowledgedByEmployee: BelongsToGetAssociationMixin<Employee>;
     declare getContents: HasManyGetAssociationsMixin<AssetItem>;
 }
-export type ShipmentAttributes = Attributes<Shipment> & {
-    shippedByEmployee: Attributes<Employee>;
-    arrivalAcknowledgedByEmployee: Attributes<Employee>;
-    contents: Attributes<AssetItem>[];
-};
 export function init(sequelize: Sequelize): void {
     Shipment.init({
         shipmentId: {
@@ -185,5 +182,6 @@ export function associate() {
     Shipment.hasMany(ShipmentContents, {
         foreignKey: 'shipmentId',
         sourceKey: 'shipmentId',
+        as: 'shipmentBoxes'
     })
 }

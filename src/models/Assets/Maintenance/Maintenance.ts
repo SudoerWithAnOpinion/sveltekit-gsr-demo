@@ -76,11 +76,6 @@ export default class Maintenance extends Model<
     declare getPerformedByEmployee: BelongsToGetAssociationMixin<Employee>;
 
 }
-export type MaintenanceAttributes = Attributes<Maintenance> & {
-    Asset: Attributes<AssetItem>;
-    CheckedInByEmployee: Attributes<Employee>;
-    PerformedByEmployee: Attributes<Employee>;
-};
 
 export function init(sequelize: Sequelize) {
     Maintenance.init({

@@ -13,12 +13,16 @@
     return DateTime.fromISO(isoDateString(inputDate)).toFormat('yyyy-MM-dd');
   }
   import AssetConditionIcon from '$components/Asset/AssetConditionIcon.svelte';
+  import { ArrivalType } from '$models/Assets/Shipping/_enums';
   import AssetTypeIcon from '$components/Asset/AssetTypeIcon.svelte';
-  import type {AssetItemAttributes} from '$models/Assets/AssetItem';
-  import type {AssetAssignmentAttributes} from '$models/Assets/AssetAssignment';
+  import type AssetItem from '$models/Assets/AssetItem';
+  import type AssetAssignment from '$models/Assets/AssetAssignment';
   import {DateTime} from 'luxon';
-  export let asset: AssetItemAttributes;
+  export let asset: AssetItem;
+  export let latestShipment: any;
   $: asset;
+  $: latestShipment;
+
 </script>
 <div class="flex justify-center">
   <div class="block rounded-lg shadow-lg bg-white w-10/12 text-left">
@@ -26,6 +30,15 @@
       <AssetTypeIcon assetType={asset.assetType}/> Asset #{asset.assetId} / {asset.assetType}: {asset.manufacturer}
       <span class="float-right font-normal">
         <span class="tag bg-atento-secondary-blue-1">Tag: {asset.assetTag}</span>
+        <span class="tag bg-atento-secondary-grey-2">
+            {latestShipment.destination}
+            {
+                #if latestShipment.delivery != ArrivalType.DELIVERY_CONFIRMED 
+                && latestShipment.delivery != ArrivalType.DAMAGED_DELIVERY
+            }
+              | DELIVERY NOT CONFIRMED
+            {/if}
+        </span>
       </span>
     </div>
     <div class="p-6">
@@ -73,7 +86,12 @@
               <tr>
                 <td><i class="fa-duotone fa-right-to-bracket mr-1"></i></td>
                 <td  class="text-atento-secondary-grey-4">Entered On</td>
-                <td>{ymdDate(asset.createdAt)} (by {asset.enteredByEmployee.givenName} {asset.enteredByEmployee.familyName})</td>
+                <td>
+                    {ymdDate(asset.createdAt)} 
+                    {#if asset.enteredByEmployee !== undefined}
+                        (by {asset.enteredByEmployee.givenName} {asset.enteredByEmployee.familyName})
+                    {/if}
+                </td>
               </tr>
               {#if asset.retirementDate !== null}
                 <tr>
@@ -106,29 +124,34 @@
               </tr>
             </thead>
             <tbody>
-              {#each asset.Assignments as assignment}
-                <tr>
-                  <td>{assignment.assignmentId.substring(24)}</td>
-                  <!-- TODO: Fix this TS error -->
-                  <td>{assignment.AssignedToEmployee.givenName} {assignment.AssignedToEmployee.familyName}</td>
-                  <td>
-                    {ymdDate(assignment.assignedOn)}
-                    / <AssetConditionIcon condition={assignment.assignedCondition} /> {assignment.assignedCondition}
-                  </td>
-                  <td>
-                    {#if assignment.returnedOn}
-                      {ymdDate(assignment.returnedOn)}
-                      / <AssetConditionIcon condition={assignment.returnCondition} /> {assignment.returnCondition} 
-                    {:else}
-                      <span class="text-gray-500">Not Returned</span>
-                    {/if}
-                  </td>
-                </tr>
-              {:else}
-                <tr class="bg-atento-secondary-grey-3 text-center">
-                  <td colspan="4">No assignments</td>
-                </tr>
-              {/each}
+                {#if asset.Assignments !== undefined}
+                    {#each asset.Assignments as assignment}
+                        <tr>
+                            <td>{assignment.assignmentId.substring(24)}</td>
+                            <td>
+                                {#if assignment.AssignedToEmployee !== undefined}
+                                    {assignment.AssignedToEmployee.givenName} {assignment.AssignedToEmployee.familyName}
+                                {/if}
+                            </td>
+                            <td>
+                                {ymdDate(assignment.assignedOn)}
+                                / <AssetConditionIcon condition={assignment.assignedCondition} /> {assignment.assignedCondition}
+                            </td>
+                            <td>
+                                {#if assignment.returnedOn}
+                                {ymdDate(assignment.returnedOn)}
+                                / <AssetConditionIcon condition={assignment.returnCondition} /> {assignment.returnCondition} 
+                                {:else}
+                                <span class="text-gray-500">Not Returned</span>
+                                {/if}
+                            </td>
+                        </tr>
+                    {/each}
+                {:else}
+                    <tr class="bg-atento-secondary-grey-3 text-center">
+                        <td colspan="4">No assignments</td>
+                    </tr>
+                {/if}
             </tbody>
           </table>
         </div>
@@ -139,30 +162,40 @@
               <th colspan="4">Maintenance</th>
               <tr>
                 <th><i class="fa-solid fa-fw fa-rectangle-barcode"></i> ID</th>
-                <th><i class="fa-duotone fa-fw fa-user-doctor"></i> Performed By</th>
                 <th><i class="fa-solid fa-fw fa-inbox-in"></i> Checked In</th>
+                <th><i class="fa-duotone fa-fw fa-user-doctor"></i> Performed By</th>
                 <th><i class="fa-solid fa-fw fa-inbox-out"></i> Completed</th>
               </tr>
             </thead>
             <tbody>
-                {#each asset.Maintenances as maintenance}
-                    <tr>
-                        <td>
-                            <a href="/assets/maintenance/{maintenance.maintenanceId}">
-                                {maintenance.maintenanceId.substring(24)}
-                            </a>
-                        </td>
-                        <td>
-                            {maintenance.PerformedByEmployee.givenName} {maintenance.PerformedByEmployee.familyName}
-                        </td>
-                        <td>
-                            {ymdDate(maintenance.checkInAt)}
-                        </td>
-                        <td>
-                            {maintenance.finishedAt === null ? '' : ymdDate(maintenance.finishedAt)}
-                        </td>
+                {#if asset.Maintenances !== undefined}
+                    {#each asset.Maintenances as maintenance}
+                        <tr>
+                            <td>
+                                <a href="/assets/maintenance/{maintenance.maintenanceId}">
+                                    {maintenance.maintenanceId.substring(24)}
+                                </a>
+                            </td>
+                            <td>
+                                {ymdDate(maintenance.checkInAt)}
+                            </td>
+                            <td>
+                                {#if maintenance.performedBy !== null && maintenance.PerformedByEmployee !== undefined}
+                                    {maintenance.PerformedByEmployee.givenName} {maintenance.PerformedByEmployee.familyName}
+                                {:else}
+                                    <span class="text-gray-500">[Awaiting Maint.]</span>
+                                {/if}
+                            </td>
+                            <td>
+                                {maintenance.finishedAt === null ? '' : ymdDate(maintenance.finishedAt)}
+                            </td>
+                        </tr>
+                    {/each}
+                {:else}
+                    <tr class="bg-atento-secondary-grey-3 text-center">
+                        <td colspan="4">No maintenance</td>
                     </tr>
-                {/each}
+                {/if}
             </tbody>
           </table>
         </div>
@@ -172,17 +205,42 @@
       <table class="shipping-table w-full">
         <thead>
           <tr>
-            <th colspan="5">Shipping History</th>
+            <th colspan="6">Shipping History</th>
           </tr>
           <tr>
-            <th><i class="fa-solid fa-fw fa-rectangle-barcode"></i> ID</th>
-            <th><i class="fa-duotone fa-fw fa-truck-arrow-right"></i> Shippped On</th>
-            <th><i class="fa-duotone fa-fw fa-mailbox"></i> Arrived On</th>
-            <th><i class="fa-duotone fa-shoe-prints"></i> Tracking</th>
+            <th><i class="fa-solid fa-fw fa-rectangle-barcode" /> ID</th>
+            <th><i class="fa-duotone fa-xmarks-lines" /> Reason</th>
+            <th><i class="fa-duotone fa-fw fa-truck-arrow-right" /> Shippped On</th>
+            <th><i class="fa-duotone fa-fw fa-map-location" /> Destination</th>
+            <th><i class="fa-duotone fa-fw fa-mailbox" /> Arrived On</th>
+            <th><i class="fa-duotone fa-shoe-prints" /> Tracking</th>
           </tr>
         </thead>
         <tbody>
-          <!-- TODO: Asset Shipments -->
+            {#if asset.Shipments !== undefined}
+                {#each asset.Shipments as shipment}
+                    <tr>
+                        <td>
+                            <a href="/assets/shipping/{shipment.shipmentId}">
+                                {shipment.shipmentId.substring(24)}
+                            </a>
+                        </td>
+                        <td>{shipment.reason}</td>
+                        <td>{ymdDate(shipment.shippedAt)}</td>
+                        <td>{shipment.destination}</td>
+                        {#if shipment.arrivalAt !== null}
+                            <td>{ymdDate(shipment.arrivalAt)}</td>
+                        {:else}
+                            <td class="text-gray-500">Not Arrived</td>
+                        {/if}
+                        <td>{shipment.trackingNumber}</td>
+                    </tr>
+                {/each}
+            {:else}
+                <tr class="bg-atento-secondary-grey-3 text-center">
+                <td colspan="6">No shipping history</td>
+                </tr>
+            {/if}
         </tbody>
       </table>
     </div>
