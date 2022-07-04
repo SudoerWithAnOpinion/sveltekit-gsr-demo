@@ -26,6 +26,7 @@ if (process.env.NODE_ENV === 'production' && process.env.SEQUELIZE_PROD_CONFIG =
         case 'development':
         default:
             dbConfig = dbConfigFile['development'] as Options;
+            dbConfig.logging = (process.env.SEQUELIZE_VERBOSE == 'true' ? console.log : false);
             break;
     }
 }
