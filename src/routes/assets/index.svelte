@@ -5,10 +5,13 @@
 </script>
 
 <script lang="ts">
-	import type { AssetItemAttributes } from '$models/Assets/AssetItem';
+    import type {CostCenterLocationInterface} from './';
+	import type AssetItem from '$models/Assets/AssetItem';
 	import AssetListTable from '$components/Asset/AssetListTable.svelte';
-	export let assets: AssetItemAttributes[];
+	export let assets: AssetItem[];
+    export let assetLocations: CostCenterLocationInterface;
     $: assets;
+    $: assetLocations;
 </script>
 
 <svelte:head>
@@ -17,7 +20,7 @@
 </svelte:head>
 
 <div class="content">
-	<AssetListTable assets={assets} />
+	<AssetListTable assets={assets} costCenterLocations={assetLocations} />
 </div>
 
 <style>

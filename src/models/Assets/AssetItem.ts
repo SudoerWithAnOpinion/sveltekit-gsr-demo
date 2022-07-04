@@ -12,6 +12,7 @@ import type {
 import {
     Association,
     DataTypes,
+    Op,
     Model,
     Sequelize,
 } from 'sequelize';
@@ -165,8 +166,35 @@ export function init(sequelize: Sequelize) {
                     }
                 },
             },
+            /**
+             *  TODO: Evalute if this is a good idea
+             * This should (read: untested) return an AssetItem and it's latest shipment only, no other models are included.
+             * Call AssetItem.scope('currentCostCenter').findAll() to get the current cost center.
+             * */
+            // scopes: { 
+            //     /** Return to most recent shipping record of an asset bound for a COST_CENTER that has completed */
+            //     currentCostCenter: {
+            //         include: [
+            //             {
+            //                 model: Shipment,
+            //                 where: {
+            //                     destination: { [Op.startsWith]: 'COST_CENTER/' },
+            //                     arrivalType: [
+            //                         ArrivalType.DELIVERY_CONFIRMED,
+            //                         ArrivalType.DAMAGED_DELIVERY,
+            //                     ]
+            //                 }
+            //             }
+            //         ],
+            //         order: [
+            //             [Shipment, 'createdAt', 'DESC'],
+            //         ],
+            //         limit: 1,
+            //     }
+            // }
         }
     );
+
 }
 export function associate() {
     // Association enteredBy -> Employee

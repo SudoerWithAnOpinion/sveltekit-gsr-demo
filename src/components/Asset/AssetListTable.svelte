@@ -1,8 +1,11 @@
 <script lang="ts">
-    import type { AssetItemAttributes } from '$models/Assets/AssetItem';
+    import type {CostCenterLocationInterface} from '$lib/../routes/assets/';
+    import type AssetItem from '$models/Assets/AssetItem';
     import AssetItemTableRow from './AssetItemTableRow.svelte';
-    export let assets: AssetItemAttributes[] = [];
+    export let assets: AssetItem[] = [];
+    export let costCenterLocations: CostCenterLocationInterface;
     $: assets;
+    $: costCenterLocations;
 </script>
 
 
@@ -17,12 +20,14 @@
                 <th scope="col" class="px-6 py-3">ID #</th>
                 <th scope="col" class="px-6 py-3">Type</th>
                 <th scope="col" class="px-6 py-3">Manufacturer</th>
+                <th scope="col" class="px-6 py-3">Model</th>
+                <th scope="col" class="px-6 py-3">Location</th>
                 <th scope="col" class="px-6 py-3">Acq. Date</th>
             </tr>
         </thead>
         <tbody>
             {#each assets as asset}
-                <AssetItemTableRow asset={asset}/>
+                <AssetItemTableRow asset={asset} assetLocation={costCenterLocations[asset.assetId]} />
             {:else}
                 <tr><td colspan="4">No Assets</td></tr>
             {/each}

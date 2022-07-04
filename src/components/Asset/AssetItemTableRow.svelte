@@ -1,7 +1,12 @@
 <script lang="ts">
+    import type AssetItem from '$models/Assets/AssetItem';
     import AssetTypeIcon from './AssetTypeIcon.svelte';
-    import type { AssetItemAttributes } from '$models/Assets/AssetItem';
-    export let asset: AssetItemAttributes;
+    export let asset: AssetItem;
+    export let assetLocation: {
+        country: string;
+        subdivision: string;
+        city: string;
+    };
 </script>
 
 <tr class="odd:bg-white even:bg-atento-secondary-blue-1">
@@ -10,8 +15,14 @@
     </td>
     <td>
         <AssetTypeIcon assetType={asset.assetType}></AssetTypeIcon>
-        {asset.assetType
-    }</td>
+        {asset.assetType}
+    </td>
     <td>{asset.manufacturer}</td>
+    <td>{asset.modelNumber}</td>
+    <td>
+        {#if assetLocation !== undefined}
+            {assetLocation.country}.{assetLocation.subdivision}.{assetLocation.city}
+        {/if}
+    </td>
     <td>{asset.acquisitionDate}</td>
 </tr>
