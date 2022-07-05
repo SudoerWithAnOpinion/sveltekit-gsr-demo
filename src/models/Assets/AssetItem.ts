@@ -1,5 +1,4 @@
 import type {
-    Attributes,
     InferAttributes,
     InferCreationAttributes,
     CreationOptional,
