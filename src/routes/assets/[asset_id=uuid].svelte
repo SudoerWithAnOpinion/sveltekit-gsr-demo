@@ -27,7 +27,7 @@
 <div class="flex justify-center">
   <div class="block rounded-lg shadow-lg bg-white w-10/12 text-left">
     <div class="py-3 px-6 border-b border-gray-300 font-bold text-xl">
-      <AssetTypeIcon assetType={asset.assetType}/> Asset #{asset.assetId} / {asset.assetType}: {asset.manufacturer}
+      <span class="text-atento-primary-orange"><AssetTypeIcon assetType={asset.assetType} /></span> Asset  #{asset.assetId} / {asset.assetType}: {asset.manufacturer}
       <span class="float-right font-normal">
         <span class="tag bg-atento-secondary-blue-1">Tag: {asset.assetTag}</span>
         <span class="tag bg-atento-secondary-grey-2">

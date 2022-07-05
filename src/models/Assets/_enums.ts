@@ -49,10 +49,15 @@ export enum AssetType {
 }
 
 export enum AssetCondition {
+    /** New in Box / Just Opened */
     NEW = 'NEW',
+    /** Used but easy to mistake for new */
     USED_LIKE_NEW = 'USED_LIKE_NEW',
+    /** Minor scratches or scuffs, easy to miss or forget */
     USED_COSMETIC_DAMAGE = 'USED_COSMETIC_DAMAGE',
+    /** Major scratches or scuffs that may affect operation negatively. */
     USED_WORN = 'USED_WORN',
+    /** Destroyed or Destroyed/Damaged */
     NON_FUNCTIONAL = 'NON_FUNCTIONAL',
 }
 
